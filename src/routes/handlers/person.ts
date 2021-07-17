@@ -5,6 +5,14 @@ export const findPersonById = (id: any) => {
   return Person.findById(id);
 };
 
+export const deletePerson = (id: any) => {
+  return Person.deleteOne({ _id: id });
+};
+
+export const findPersons = () => {
+  return Person.find({});
+};
+
 export const createPerson = (req: Request<{}, {}, PersonModel>) => {
   const { name, email, phoneNumber, country, birthday } = req.body;
   const person = new Person({ name, email, phoneNumber, country, birthday });

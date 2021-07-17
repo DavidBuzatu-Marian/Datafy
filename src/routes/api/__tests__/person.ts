@@ -1,5 +1,6 @@
 import request from 'supertest';
 import app from '../../../server/server';
+import crypto from 'crypto';
 import { connectToDatabase, destroyDatabase } from '../../../database/connect';
 
 beforeAll(() => {
@@ -8,6 +9,15 @@ beforeAll(() => {
 
 afterAll(() => {
   destroyDatabase();
+});
+
+describe('get all persons', () => {
+  it('should get all persons added in this method and delete previous ones', async () => {
+    await addPersons(10);
+    const responseGetPersons = await request(app).get(`/api/person`);
+    expect(responseGetPersons.statusCode).toEqual(200);
+    expect(responseGetPersons.body.length).toEqual(10);
+  });
 });
 
 describe('create person', () => {
@@ -119,3 +129,42 @@ describe('get person with invalid id type', () => {
     expect(responseGetPerson.statusCode).toEqual(500);
   });
 });
+
+describe('delete person after insertion', () => {
+  it('should add a person and remove it successfully', async () => {
+    const responseAddPerson = await addPerson();
+    const responseDeletePerson = await request(app).delete(
+      `/api/person/${responseAddPerson.body._id}`
+    );
+    expect(responseDeletePerson.statusCode).toEqual(200);
+  });
+});
+
+describe('do not delete person without insertion', () => {
+  it('should get a 400 response code while trying to delete an inexistent user', async () => {
+    const responseDeletePerson = await request(app).delete(
+      `/api/person/${crypto.randomBytes(12).toString('hex')}`
+    );
+    expect(responseDeletePerson.statusCode).toEqual(400);
+  });
+});
+
+const addPersons = async (numberOfPersons: number) => {
+  let personsPromises = [];
+  for (let i = 0; i < numberOfPersons; ++i) {
+    personsPromises.push(addPerson());
+  }
+  await Promise.all(personsPromises);
+};
+
+const addPerson = async () => {
+  return request(app)
+    .post('/api/person')
+    .send({
+      name: crypto.randomBytes(20).toString('hex'),
+      email: `${crypto.randomBytes(10).toString('hex')}@gmail.com`,
+      phoneNumber: crypto.randomBytes(10).toString('hex'),
+      country: crypto.randomBytes(20).toString('hex'),
+      birthday: '2021-07-12T22:26:12.111Z',
+    });
+};
