@@ -1,16 +1,10 @@
-import express from 'express';
-import { connectToDatabase } from './database/connect';
+import app from './server/server';
 import * as dotenv from 'dotenv';
+import { connectToDatabase } from './database/connect';
 
-dotenv.config();
 connectToDatabase();
-
-const app = express();
+dotenv.config();
 const port = process.env.PORT || 5000;
-
-app.use(express.json());
-
-app.use('/api/person', require('./routes/api/person'));
 
 app.listen(port, () => {
   // tslint:disable-next-line:no-console
