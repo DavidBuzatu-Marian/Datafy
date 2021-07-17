@@ -101,3 +101,21 @@ describe('create person and get information', () => {
     expect(responseGetPerson.body).toEqual(responseCreatePerson.body);
   });
 });
+
+describe('get person which does not exist', () => {
+  it('should get a 400 response because id is not found in database', async () => {
+    const responseGetPerson = await request(app).get(
+      `/api/person/60f2ed5de08694482c3232e4`
+    );
+    expect(responseGetPerson.statusCode).toEqual(400);
+  });
+});
+
+describe('get person with invalid id type', () => {
+  it('should get a 500 response because id is not a valid format', async () => {
+    const responseGetPerson = await request(app).get(
+      `/api/person/invalididform`
+    );
+    expect(responseGetPerson.statusCode).toEqual(500);
+  });
+});
