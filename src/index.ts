@@ -1,13 +1,16 @@
 import express from 'express';
 import { connectToDatabase } from './database/connect';
-const app = express();
-const port = 8080;
+import * as dotenv from 'dotenv';
 
+dotenv.config();
 connectToDatabase();
 
-app.get('/', (_, res) => {
-  res.send('Hello22');
-});
+const app = express();
+const port = process.env.PORT || 5000;
+
+app.use(express.json());
+
+app.use('/api/person', require('./routes/api/person'));
 
 app.listen(port, () => {
   // tslint:disable-next-line:no-console
