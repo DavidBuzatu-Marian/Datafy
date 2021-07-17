@@ -19,10 +19,22 @@ export const disconnectFromDatabase = async () => {
   }
 };
 
-const disconnectWithMongoose = async () => {
+export const destroyDatabase = async () => {
+  try {
+    destroyDatabaseAndCloseConnection();
+  } catch (err) {
+    logError(err);
+  }
+};
+
+const destroyDatabaseAndCloseConnection = async () => {
   await mongoose.connection.db.dropDatabase(async () => {
     await mongoose.connection.close();
   });
+};
+
+const disconnectWithMongoose = async () => {
+  await mongoose.connection.close();
 };
 
 const connectWithMongoose = async () => {
