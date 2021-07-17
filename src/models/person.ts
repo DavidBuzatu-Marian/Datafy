@@ -1,20 +1,20 @@
 import { Schema, model, Document } from 'mongoose';
 
-interface Person extends Document {
+export interface PersonModel extends Document {
   _id: string;
   name: string;
   email: string;
-  phone_number?: string;
+  phoneNumber?: string;
   birthday?: Date;
   country?: string;
 }
 
-const personSchema = new Schema<Person>({
+const personSchema = new Schema<PersonModel>({
   name: { type: String, required: true },
   email: { type: String, required: true },
-  phone_number: { type: String },
+  phoneNumber: { type: String },
   birthday: { type: Date },
   country: { type: String },
 });
 
-export const Person = model<Person>('Person', personSchema);
+export const Person = model<PersonModel>('Person', personSchema);
