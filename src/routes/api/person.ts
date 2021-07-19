@@ -38,7 +38,6 @@ router.get('/', async (req: Request, res: Response) => {
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const person = await deletePerson(req.params.id);
-    console.log(person);
     if (person.deletedCount == 0) {
       return res.status(400).send('Bad Request');
     }

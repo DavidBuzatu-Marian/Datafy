@@ -2,6 +2,7 @@ import request from 'supertest';
 import app from '../../../server/server';
 import crypto from 'crypto';
 import { connectToDatabase, destroyDatabase } from '../../../database/connect';
+import { PersonModel } from '../../../models/person';
 
 beforeAll(() => {
   connectToDatabase();
@@ -22,13 +23,7 @@ describe('get all persons', () => {
 
 describe('create person', () => {
   it('should create a new person given valid input', async () => {
-    const response = await request(app).post('/api/person').send({
-      name: 'Dave',
-      email: 'davidm.buz@gmail.com',
-      phoneNumber: '0726654132',
-      country: 'Romania',
-      birthday: '2021-07-12T22:26:12.111Z',
-    });
+    const response = await addPerson();
     expect(response.statusCode).toEqual(200);
   });
 });
@@ -96,13 +91,7 @@ describe('fail to create person without valid birthday', () => {
 
 describe('create person and get information', () => {
   it('should create a person and getting it by id should return its info', async () => {
-    const responseCreatePerson = await request(app).post('/api/person').send({
-      name: 'test',
-      email: 'test@test.com',
-      phoneNumber: '5453',
-      country: 'Test',
-      birthday: '10/10/2021',
-    });
+    const responseCreatePerson = await addPerson();
     expect(responseCreatePerson.statusCode).toEqual(200);
     const responseGetPerson = await request(app).get(
       `/api/person/${responseCreatePerson.body._id}`
@@ -149,6 +138,102 @@ describe('do not delete person without insertion', () => {
   });
 });
 
+describe('add person and update name', () => {
+  it('should add a person and update the name with a given value', async () => {
+    const responseAddPerson = await addPerson();
+    expect(responseAddPerson.statusCode).toEqual(200);
+    const fields = { name: 'Dave' };
+    const responseUpdatePerson = await updatePerson(
+      responseAddPerson.body._id,
+      fields
+    );
+    expect(responseUpdatePerson.statusCode).toEqual(200);
+    checkUpdatedFields(responseUpdatePerson.body, fields);
+  });
+});
+
+describe('add person and update email', () => {
+  it('should add a person and update the email with a given value', async () => {
+    const responseAddPerson = await addPerson();
+    expect(responseAddPerson.statusCode).toEqual(200);
+    const fields = { email: 'Dave@gmail.com' };
+    const responseUpdatePerson = await updatePerson(
+      responseAddPerson.body._id,
+      fields
+    );
+    expect(responseUpdatePerson.statusCode).toEqual(200);
+    checkUpdatedFields(responseUpdatePerson.body, fields);
+  });
+});
+
+describe('add person and update name with empty value', () => {
+  it('should add a person and fail updating the name with an empty value', async () => {
+    const responseAddPerson = await addPerson();
+    expect(responseAddPerson.statusCode).toEqual(200);
+    const fields = { name: '' };
+    const responseUpdatePerson = await updatePerson(
+      responseAddPerson.body._id,
+      fields
+    );
+    expect(responseUpdatePerson.statusCode).toEqual(400);
+  });
+});
+
+describe('add person and update email with bad format', () => {
+  it('should add a person and fail updating the email with a badly formatted email', async () => {
+    const responseAddPerson = await addPerson();
+    expect(responseAddPerson.statusCode).toEqual(200);
+    const fields = { email: 'not_an_email' };
+    const responseUpdatePerson = await updatePerson(
+      responseAddPerson.body._id,
+      fields
+    );
+    expect(responseUpdatePerson.statusCode).toEqual(400);
+  });
+});
+
+describe('add person and update country and birthday', () => {
+  it('should add a person and update the country and birthday', async () => {
+    const responseAddPerson = await addPerson();
+    expect(responseAddPerson.statusCode).toEqual(200);
+    const fields = {
+      country: crypto.randomBytes(20).toString('hex'),
+      birthday: '2021-07-12T22:26:12.111Z',
+    };
+    const responseUpdatePerson = await updatePerson(
+      responseAddPerson.body._id,
+      fields
+    );
+    expect(responseUpdatePerson.statusCode).toEqual(200);
+    checkUpdatedFields(responseUpdatePerson.body, fields);
+  });
+});
+
+describe('add person and update birthday with invalid type', () => {
+  it('should add a person and get 400 response on updating birthday with invalid type', async () => {
+    const responseAddPerson = await addPerson();
+    expect(responseAddPerson.statusCode).toEqual(200);
+    const fields = {
+      birthday: '2021.07.12',
+    };
+    const responseUpdatePerson = await updatePerson(
+      responseAddPerson.body._id,
+      fields
+    );
+    expect(responseUpdatePerson.statusCode).toEqual(400);
+  });
+});
+
+const checkUpdatedFields = (person: PersonModel, fields: {}) => {
+  for (const [key, value] of Object.entries(fields)) {
+    expect(person.get(key)).toEqual(value);
+  }
+};
+
+const updatePerson = (id: any, fields: {}) => {
+  return request(app).put(`/api/person/${id}`).send(fields);
+};
+
 const addPersons = async (numberOfPersons: number) => {
   let personsPromises = [];
   for (let i = 0; i < numberOfPersons; ++i) {
@@ -157,7 +242,7 @@ const addPersons = async (numberOfPersons: number) => {
   await Promise.all(personsPromises);
 };
 
-const addPerson = async () => {
+const addPerson = () => {
   return request(app)
     .post('/api/person')
     .send({
