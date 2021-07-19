@@ -6,9 +6,10 @@ import {
   createPerson,
   findPersons,
   deletePerson,
+  updatePerson,
 } from '../handlers/person';
 import { Request, Response } from 'express';
-import { check, validationResult } from 'express-validator';
+import { body, check, validationResult } from 'express-validator';
 const router = express.Router();
 
 router.get('/:id', async (req: Request, res: Response) => {
@@ -66,6 +67,43 @@ router.post(
     }
   }
 );
+
+router.put(
+  '/:id',
+  [
+    body('name').custom((name) => {
+      if (name == '') {
+        return false;
+      }
+      return true;
+    }),
+    body('email').custom((email) => {
+      if (email) {
+        return RFC2822EmailCheck(email);
+      }
+      return true;
+    }),
+  ],
+  async (req: Request, res: Response) => {
+    try {
+      if (checkNotSucceeded(req)) {
+        return res.status(400).json('Error! Checks have failed');
+      }
+      const person = await updatePerson(req);
+
+      res.status(200).json(person);
+    } catch (err) {
+      handleErrors(res, err);
+    }
+  }
+);
+
+const RFC2822EmailCheck = (email: string) => {
+  const regex: RegExp = new RegExp(
+    "^([a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)$"
+  );
+  return regex.test(email);
+};
 
 const checkNotSucceeded = (req: Request) => {
   const errors = validationResult(req);
