@@ -14,13 +14,7 @@ afterAll(() => {
 
 describe('post valid event', () => {
   it('should add an event to the database given valid name, date and location', async () => {
-    const response = await request(app)
-      .post('/api/event')
-      .send({
-        name: crypto.randomBytes(20).toString('hex'),
-        date: Date.now(),
-        location: crypto.randomBytes(20).toString('hex'),
-      });
+    const response = await addEvent();
     expect(response.statusCode).toEqual(200);
   });
 });
@@ -96,3 +90,36 @@ describe('post valid event with invalid date', () => {
     expect(response.statusCode).toEqual(500);
   });
 });
+
+describe('get event by id', () => {
+  it('should add an event and get it using its id', async () => {
+    const response = await addEvent();
+    expect(response.statusCode).toEqual(200);
+    const responseGetEvent = await request(app).get(
+      `/api/event/${response.body._id}`
+    );
+    expect(responseGetEvent.statusCode).toEqual(200);
+    expect(responseGetEvent.body).toEqual(response.body);
+  });
+});
+
+describe('get event by invalid id', () => {
+  it('should fail getting an event with an invalid id', async () => {
+    const responseGetEvent = await request(app).get(
+      `/api/event/${crypto.randomBytes(12).toString('hex')}`
+    );
+    expect(responseGetEvent.statusCode).toEqual(400);
+  });
+});
+
+const addEvent = async () => {
+  return await request(app)
+    .post('/api/event')
+    .send({
+      name: crypto.randomBytes(20).toString('hex'),
+      date: Date.now(),
+      location: crypto.randomBytes(20).toString('hex'),
+      details: crypto.randomBytes(100).toString('hex'),
+      directions: crypto.randomBytes(20).toString('hex'),
+    });
+};

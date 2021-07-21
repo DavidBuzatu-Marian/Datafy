@@ -240,8 +240,8 @@ const addPersons = async (numberOfPersons: number) => {
   }
 };
 
-const addPerson = async () => {
-  return await request(app)
+const addPerson = () => {
+  return request(app)
     .post('/api/person')
     .send({
       name: crypto.randomBytes(20).toString('hex'),

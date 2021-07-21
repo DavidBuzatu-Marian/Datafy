@@ -14,6 +14,10 @@ export const createEvent = (req: Request<{}, {}, EventModel>) => {
   return event;
 };
 
+export const findEventById = (id: any) => {
+  return Event.findById(id);
+};
+
 export const saveEvent = (event: EventModel) => {
   return event.save();
 };

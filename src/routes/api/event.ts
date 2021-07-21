@@ -1,8 +1,8 @@
 import express from 'express';
 import { handleErrors, checkNotSucceeded } from '../handlers/errors';
-import { createEvent, saveEvent } from '../handlers/event';
+import { createEvent, saveEvent, findEventById } from '../handlers/event';
 import { Request, Response } from 'express';
-import { check, validationResult } from 'express-validator';
+import { check } from 'express-validator';
 const router = express.Router();
 
 router.post(
@@ -25,4 +25,16 @@ router.post(
     }
   }
 );
+
+router.get('/:id', async (req: Request, res: Response) => {
+  try {
+    const event = await findEventById(req.params.id);
+    if (event == null) {
+      return res.status(400).send('Bad Request');
+    }
+    res.status(200).json(event);
+  } catch (err) {
+    handleErrors(res, err);
+  }
+});
 module.exports = router;
