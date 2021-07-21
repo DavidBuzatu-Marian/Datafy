@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../../../server/server';
 import crypto from 'crypto';
 import { connectToDatabase, destroyDatabase } from '../../../database/connect';
-import { PersonModel } from '../../../models/person';
+import { Person, PersonModel } from '../../../models/person';
 
 beforeAll(() => {
   connectToDatabase();
@@ -214,19 +214,19 @@ describe('add person and update birthday with invalid type', () => {
     const responseAddPerson = await addPerson();
     expect(responseAddPerson.statusCode).toEqual(200);
     const fields = {
-      birthday: '2021.07.12',
+      birthday: '20.20.2020',
     };
     const responseUpdatePerson = await updatePerson(
       responseAddPerson.body._id,
       fields
     );
-    expect(responseUpdatePerson.statusCode).toEqual(400);
+    expect(responseUpdatePerson.statusCode).toEqual(500);
   });
 });
 
 const checkUpdatedFields = (person: PersonModel, fields: {}) => {
   for (const [key, value] of Object.entries(fields)) {
-    expect(person.get(key)).toEqual(value);
+    expect(person[key] as string).toEqual(value);
   }
 };
 

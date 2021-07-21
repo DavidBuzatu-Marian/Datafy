@@ -7,6 +7,7 @@ export interface PersonModel extends Document {
   phoneNumber?: string;
   birthday?: Date;
   country?: string;
+  [key: string]: any;
 }
 
 const personSchema = new Schema<PersonModel>({
