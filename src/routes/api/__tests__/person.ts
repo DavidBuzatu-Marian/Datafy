@@ -235,15 +235,13 @@ const updatePerson = (id: any, fields: {}) => {
 };
 
 const addPersons = async (numberOfPersons: number) => {
-  let personsPromises = [];
   for (let i = 0; i < numberOfPersons; ++i) {
-    personsPromises.push(addPerson());
+    await addPerson();
   }
-  await Promise.all(personsPromises);
 };
 
-const addPerson = () => {
-  return request(app)
+const addPerson = async () => {
+  return await request(app)
     .post('/api/person')
     .send({
       name: crypto.randomBytes(20).toString('hex'),
