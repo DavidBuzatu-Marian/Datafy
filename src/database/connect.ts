@@ -41,6 +41,7 @@ const connectWithMongoose = async () => {
   mongoose.set('useUnifiedTopology', true);
   mongoose.set('useCreateIndex', true);
   mongoose.set('useNewUrlParser', true);
+  mongoose.set('useFindAndModify', true);
   await mongoose.connect(database);
 };
 

@@ -78,7 +78,7 @@ describe('post valid event without location', () => {
         details: crypto.randomBytes(100).toString('hex'),
         directions: crypto.randomBytes(20).toString('hex'),
       });
-    expect(response.statusCode).toEqual(200);
+    expect(response.statusCode).toEqual(400);
   });
 });
 
@@ -93,6 +93,6 @@ describe('post valid event with invalid date', () => {
         details: crypto.randomBytes(100).toString('hex'),
         directions: crypto.randomBytes(20).toString('hex'),
       });
-    expect(response.statusCode).toEqual(400);
+    expect(response.statusCode).toEqual(500);
   });
 });
