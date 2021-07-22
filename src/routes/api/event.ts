@@ -1,6 +1,11 @@
 import express from 'express';
 import { handleErrors, checkNotSucceeded } from '../handlers/errors';
-import { createEvent, saveEvent, findEventById } from '../handlers/event';
+import {
+  createEvent,
+  saveEvent,
+  findEventById,
+  findEvents,
+} from '../handlers/event';
 import { Request, Response } from 'express';
 import { check } from 'express-validator';
 const router = express.Router();
@@ -33,6 +38,18 @@ router.get('/:id', async (req: Request, res: Response) => {
       return res.status(400).send('Bad Request');
     }
     res.status(200).json(event);
+  } catch (err) {
+    handleErrors(res, err);
+  }
+});
+
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    const events = await findEvents();
+    if (events == null) {
+      return res.status(400).send('Bad Request');
+    }
+    res.status(200).json(events);
   } catch (err) {
     handleErrors(res, err);
   }

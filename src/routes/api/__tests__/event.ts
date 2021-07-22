@@ -2,7 +2,6 @@ import request from 'supertest';
 import app from '../../../server/server';
 import crypto from 'crypto';
 import { connectToDatabase, destroyDatabase } from '../../../database/connect';
-import { Event, EventModel } from '../../../models/event';
 
 beforeAll(() => {
   connectToDatabase();
@@ -10,6 +9,15 @@ beforeAll(() => {
 
 afterAll(() => {
   destroyDatabase();
+});
+
+describe('get all events', () => {
+  it('should get all events', async () => {
+    await addEvents(10);
+    const responseGetEvents = await request(app).get(`/api/event/`);
+    expect(responseGetEvents.statusCode).toEqual(200);
+    expect(responseGetEvents.body.length).toEqual(10);
+  });
 });
 
 describe('post valid event', () => {
@@ -111,6 +119,12 @@ describe('get event by invalid id', () => {
     expect(responseGetEvent.statusCode).toEqual(400);
   });
 });
+
+const addEvents = async (numberOfEvents: number) => {
+  for (let i = 0; i < numberOfEvents; ++i) {
+    await addEvent();
+  }
+};
 
 const addEvent = async () => {
   return await request(app)

@@ -14,6 +14,10 @@ export const createEvent = (req: Request<{}, {}, EventModel>) => {
   return event;
 };
 
+export const findEvents = () => {
+  return Event.find({});
+};
+
 export const findEventById = (id: any) => {
   return Event.findById(id);
 };
