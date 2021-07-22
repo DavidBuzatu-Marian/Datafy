@@ -28,6 +28,6 @@ export const createPerson = (req: Request<{}, {}, PersonModel>) => {
   return person;
 };
 
-export const savePerson = (person: PersonModel) => {
+export const savePerson = (person: PersonModel): Promise<PersonModel> => {
   return person.save();
 };

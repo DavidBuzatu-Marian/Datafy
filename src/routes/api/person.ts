@@ -1,5 +1,5 @@
 import express from 'express';
-import { handleErrors } from '../handlers/errors';
+import { handleErrors, checkNotSucceeded } from '../handlers/errors';
 import {
   findPersonById,
   savePerson,
@@ -9,7 +9,7 @@ import {
   updatePerson,
 } from '../handlers/person';
 import { Request, Response } from 'express';
-import { body, check, validationResult } from 'express-validator';
+import { body, check } from 'express-validator';
 const router = express.Router();
 
 router.get('/:id', async (req: Request, res: Response) => {
@@ -103,14 +103,6 @@ const RFC2822EmailCheck = (email: string) => {
     "^([a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)$"
   );
   return regex.test(email);
-};
-
-const checkNotSucceeded = (req: Request) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return errors.array();
-  }
-  return null;
 };
 
 module.exports = router;
