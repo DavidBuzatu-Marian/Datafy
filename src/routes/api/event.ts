@@ -6,9 +6,10 @@ import {
   findEventById,
   findEvents,
   deleteEvent,
+  updateEvent,
 } from '../handlers/event';
 import { Request, Response } from 'express';
-import { check } from 'express-validator';
+import { check, body } from 'express-validator';
 const router = express.Router();
 
 router.post(
@@ -67,4 +68,35 @@ router.delete('/:id', async (req: Request, res: Response) => {
     handleErrors(res, err);
   }
 });
+
+router.put(
+  '/:id',
+  [
+    body('name').custom((name: string) => {
+      if (name == '') {
+        return false;
+      }
+      return true;
+    }),
+    body('location').custom((location: string) => {
+      if (location == '') {
+        return false;
+      }
+      return true;
+    }),
+  ],
+  async (req: Request, res: Response) => {
+    try {
+      if (checkNotSucceeded(req)) {
+        return res.status(400).json('Error! Checks have failed');
+      }
+      const person = await updateEvent(req);
+
+      res.status(200).json(person);
+    } catch (err) {
+      handleErrors(res, err);
+    }
+  }
+);
+
 module.exports = router;

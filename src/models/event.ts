@@ -7,6 +7,7 @@ export interface EventModel extends Document {
   location: string;
   directions?: string;
   details?: string;
+  [key: string]: any;
 }
 
 const eventSchema = new Schema<EventModel>({
