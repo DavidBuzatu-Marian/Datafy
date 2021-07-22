@@ -19,7 +19,8 @@
     "mongo": "^0.1.0",
     "mongoose": "^5.13.3",
     "nodemon": "^2.0.12",
-    "ts-node": "^10.1.0"
+    "ts-node": "^10.1.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@types/config": "^0.0.39",
