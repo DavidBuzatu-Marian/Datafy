@@ -137,3 +137,21 @@ const addEvent = async () => {
       directions: crypto.randomBytes(20).toString('hex'),
     });
 };
+
+describe('delete event after insertion', () => {
+  it('should add event and remove it successfully', async () => {
+    const responseAddEvent = await addEvent();
+    const responseDeleteEvent = await request(app).delete(
+      `/api/event/${responseAddEvent.body._id}`
+    );
+    expect(responseDeleteEvent.statusCode).toEqual(200);
+  });
+});
+describe('do not delete event without insertion', () => {
+  it('should get a 400 response code while trying to delete an inexistent event', async () => {
+    const responseDeletEevent = await request(app).delete(
+      `/api/event/${crypto.randomBytes(12).toString('hex')}`
+    );
+    expect(responseDeletEevent.statusCode).toEqual(400);
+  });
+});

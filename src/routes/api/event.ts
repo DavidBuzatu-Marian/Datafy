@@ -5,6 +5,7 @@ import {
   saveEvent,
   findEventById,
   findEvents,
+  deleteEvent,
 } from '../handlers/event';
 import { Request, Response } from 'express';
 import { check } from 'express-validator';
@@ -50,6 +51,18 @@ router.get('/', async (req: Request, res: Response) => {
       return res.status(400).send('Bad Request');
     }
     res.status(200).json(events);
+  } catch (err) {
+    handleErrors(res, err);
+  }
+});
+
+router.delete('/:id', async (req: Request, res: Response) => {
+  try {
+    const event = await deleteEvent(req.params.id);
+    if (event.deletedCount == 0) {
+      return res.status(400).send('Bad Request');
+    }
+    res.status(200).send(`Deleted event with id: ${req.params.id}`);
   } catch (err) {
     handleErrors(res, err);
   }

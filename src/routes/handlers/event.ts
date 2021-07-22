@@ -25,3 +25,7 @@ export const findEventById = (id: any) => {
 export const saveEvent = (event: EventModel) => {
   return event.save();
 };
+
+export const deleteEvent = (id: any) => {
+  return Event.deleteOne({ _id: id });
+};
