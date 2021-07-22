@@ -226,6 +226,7 @@ describe('add event and update date and location', () => {
       fields
     );
     expect(responseUpdateEvent.statusCode).toEqual(200);
+    expect(responseUpdateEvent.body).not.toBeNull();
     checkUpdatedFields(responseUpdateEvent.body, fields);
   });
 });
