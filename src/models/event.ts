@@ -7,6 +7,7 @@ export interface EventModel extends Document {
   location: string;
   directions?: string;
   details?: string;
+  date_added: Date;
   [key: string]: any;
 }
 
@@ -16,6 +17,7 @@ const eventSchema = new Schema<EventModel>({
   location: { type: String, required: true },
   directions: { type: String },
   details: { type: String },
+  date_added: {type: Date, default: Date.now()}
 });
 
 export const Event = model<EventModel>('Event', eventSchema);

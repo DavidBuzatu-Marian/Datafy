@@ -3,6 +3,7 @@ import app from '../../../server/server';
 import crypto from 'crypto';
 import { connectToDatabase, destroyDatabase } from '../../../database/connect';
 import { EventModel } from '../../../models/event';
+import { assert } from 'console';
 
 beforeAll(() => {
   connectToDatabase();
@@ -271,13 +272,14 @@ describe('add event and update date with invalid value', () => {
 });
 
 const checkUpdatedFields = (event: EventModel, fields: {}) => {
+  assert(event !== null);
   for (const [key, value] of Object.entries(fields)) {
     expect(event[key] as string).toEqual(value);
   }
 };
 
-const updateEvent = (id: any, fields: {}) => {
-  return request(app).put(`/api/event/${id}`).send(fields);
+const updateEvent = async (id: any, fields: {}) => {
+  return await request(app).put(`/api/event/${id}`).send(fields);
 };
 
 const addEvents = async (numberOfEvents: number) => {
