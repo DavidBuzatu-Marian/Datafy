@@ -16,7 +16,8 @@ router.post(
   '/',
   [
     check('name', 'Name is mandatory').not().isEmpty(),
-    check('date', 'Date is mandatory').not().isEmpty(),
+    check('start_date', 'Date is mandatory').not().isEmpty(),
+    check('end_date', 'Date is mandatory').not().isEmpty(),
     check('location', 'Location is mandatory').not().isEmpty(),
   ],
   async (req: Request, res: Response) => {

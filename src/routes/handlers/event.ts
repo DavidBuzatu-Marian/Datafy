@@ -3,10 +3,12 @@ import { Request } from 'express';
 import { Model } from 'mongoose';
 
 export const createEvent = (req: Request<{}, {}, EventModel>) => {
-  const { name, date, location, directions, details } = req.body;
+  const { name, start_date, end_date, location, directions, details } =
+    req.body;
   const event = new Event({
     name,
-    date,
+    start_date,
+    end_date,
     location,
     directions,
     details,

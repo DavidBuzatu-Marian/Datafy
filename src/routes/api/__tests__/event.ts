@@ -35,7 +35,8 @@ describe('post valid event with other fields', () => {
       .post('/api/event')
       .send({
         name: crypto.randomBytes(20).toString('hex'),
-        date: Date.now(),
+        start_date: Date.now(),
+        end_date: Date.now(),
         location: crypto.randomBytes(20).toString('hex'),
         details: crypto.randomBytes(100).toString('hex'),
         directions: crypto.randomBytes(20).toString('hex'),
@@ -49,7 +50,8 @@ describe('post valid event without name', () => {
     const response = await request(app)
       .post('/api/event')
       .send({
-        date: Date.now(),
+        start_date: Date.now(),
+        end_date: Date.now(),
         location: crypto.randomBytes(20).toString('hex'),
         details: crypto.randomBytes(100).toString('hex'),
         directions: crypto.randomBytes(20).toString('hex'),
@@ -78,7 +80,8 @@ describe('post valid event without location', () => {
       .post('/api/event')
       .send({
         name: crypto.randomBytes(20).toString('hex'),
-        date: Date.now(),
+        start_date: Date.now(),
+        end_date: Date.now(),
         details: crypto.randomBytes(100).toString('hex'),
         directions: crypto.randomBytes(20).toString('hex'),
       });
@@ -92,7 +95,8 @@ describe('post valid event with invalid date', () => {
       .post('/api/event')
       .send({
         name: crypto.randomBytes(20).toString('hex'),
-        date: '2020.20.20',
+        start_date: '2020.20.20',
+        end_date: '2020.20.20',
         location: crypto.randomBytes(20).toString('hex'),
         details: crypto.randomBytes(100).toString('hex'),
         directions: crypto.randomBytes(20).toString('hex'),
@@ -125,6 +129,7 @@ describe('get event by invalid id', () => {
 describe('delete event after insertion', () => {
   it('should add event and remove it successfully', async () => {
     const responseAddEvent = await addEvent();
+    expect(responseAddEvent.statusCode).toEqual(200);
     const responseDeleteEvent = await request(app).delete(
       `/api/event/${responseAddEvent.body._id}`
     );
@@ -155,11 +160,25 @@ describe('add event and update name', () => {
   });
 });
 
-describe('add event and update date', () => {
-  it('should add an event and update the date of it', async () => {
+describe('add event and update start date', () => {
+  it('should add an event and update the start date of it', async () => {
     const responseAddEvent = await addEvent();
     expect(responseAddEvent.statusCode).toEqual(200);
-    const fields = { date: new Date(Date.now()).toISOString() };
+    const fields = { start_date: new Date(Date.now()).toISOString() };
+    const responseUpdateEvent = await updateEvent(
+      responseAddEvent.body._id,
+      fields
+    );
+    expect(responseUpdateEvent.statusCode).toEqual(200);
+    checkUpdatedFields(responseUpdateEvent.body, fields);
+  });
+});
+
+describe('add event and update end date', () => {
+  it('should add an event and update the end date of it', async () => {
+    const responseAddEvent = await addEvent();
+    expect(responseAddEvent.statusCode).toEqual(200);
+    const fields = { end_date: new Date(Date.now()).toISOString() };
     const responseUpdateEvent = await updateEvent(
       responseAddEvent.body._id,
       fields
@@ -179,6 +198,7 @@ describe('add event and update location', () => {
       fields
     );
     expect(responseUpdateEvent.statusCode).toEqual(200);
+    expect(responseUpdateEvent.body).not.toBeNull();
     checkUpdatedFields(responseUpdateEvent.body, fields);
   });
 });
@@ -193,17 +213,34 @@ describe('add event and update name and location', () => {
       fields
     );
     expect(responseUpdateEvent.statusCode).toEqual(200);
+    expect(responseUpdateEvent.body).not.toBeNull();
     checkUpdatedFields(responseUpdateEvent.body, fields);
   });
 });
 
-describe('add event and update name and date', () => {
-  it('should add an event and update the name and date of it', async () => {
+describe('add event and update name and start_date', () => {
+  it('should add an event and update the name and start_date of it', async () => {
     const responseAddEvent = await addEvent();
     expect(responseAddEvent.statusCode).toEqual(200);
     const fields = {
       name: 'Some test',
-      date: new Date(Date.now()).toISOString(),
+      start_date: new Date(Date.now()).toISOString(),
+    };
+    const responseUpdateEvent = await updateEvent(
+      responseAddEvent.body._id,
+      fields
+    );
+    expect(responseUpdateEvent.statusCode).toEqual(200);
+    checkUpdatedFields(responseUpdateEvent.body, fields);
+  });
+});
+describe('add event and update name and end_date', () => {
+  it('should add an event and update the name and end_date of it', async () => {
+    const responseAddEvent = await addEvent();
+    expect(responseAddEvent.statusCode).toEqual(200);
+    const fields = {
+      name: 'Some test',
+      end_date: new Date(Date.now()).toISOString(),
     };
     const responseUpdateEvent = await updateEvent(
       responseAddEvent.body._id,
@@ -214,13 +251,31 @@ describe('add event and update name and date', () => {
   });
 });
 
-describe('add event and update date and location', () => {
-  it('should add an event and update the date and location of it', async () => {
+describe('add event and update start_date and location', () => {
+  it('should add an event and update the start_date and location of it', async () => {
     const responseAddEvent = await addEvent();
     expect(responseAddEvent.statusCode).toEqual(200);
     const fields = {
       location: 'Some test',
-      date: new Date(Date.now()).toISOString(),
+      start_date: new Date(Date.now()).toISOString(),
+    };
+    const responseUpdateEvent = await updateEvent(
+      responseAddEvent.body._id,
+      fields
+    );
+    expect(responseUpdateEvent.statusCode).toEqual(200);
+    expect(responseUpdateEvent.body).not.toBeNull();
+    checkUpdatedFields(responseUpdateEvent.body, fields);
+  });
+});
+
+describe('add event and update end_date and location', () => {
+  it('should add an event and update the end_date and location of it', async () => {
+    const responseAddEvent = await addEvent();
+    expect(responseAddEvent.statusCode).toEqual(200);
+    const fields = {
+      location: 'Some test',
+      end_date: new Date(Date.now()).toISOString(),
     };
     const responseUpdateEvent = await updateEvent(
       responseAddEvent.body._id,
@@ -258,11 +313,24 @@ describe('add event and update location with empty value', () => {
   });
 });
 
-describe('add event and update date with invalid value', () => {
-  it('should add an event and fail updating event with invalid date', async () => {
+describe('add event and update start_date with invalid value', () => {
+  it('should add an event and fail updating event with invalid start_date', async () => {
     const responseAddEvent = await addEvent();
     expect(responseAddEvent.statusCode).toEqual(200);
-    const fields = { date: 'not a date' };
+    const fields = { start_date: 'not a date' };
+    const responseUpdateEvent = await updateEvent(
+      responseAddEvent.body._id,
+      fields
+    );
+    expect(responseUpdateEvent.statusCode).toEqual(500);
+  });
+});
+
+describe('add event and update end_date with invalid value', () => {
+  it('should add an event and fail updating event with invalid end_date', async () => {
+    const responseAddEvent = await addEvent();
+    expect(responseAddEvent.statusCode).toEqual(200);
+    const fields = { end_date: 'not a date' };
     const responseUpdateEvent = await updateEvent(
       responseAddEvent.body._id,
       fields
@@ -293,7 +361,8 @@ const addEvent = async () => {
     .post('/api/event')
     .send({
       name: crypto.randomBytes(20).toString('hex'),
-      date: Date.now(),
+      start_date: Date.now(),
+      end_date: Date.now(),
       location: crypto.randomBytes(20).toString('hex'),
       details: crypto.randomBytes(100).toString('hex'),
       directions: crypto.randomBytes(20).toString('hex'),

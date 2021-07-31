@@ -3,7 +3,8 @@ import { Schema, model, Document } from 'mongoose';
 export interface EventModel extends Document {
   _id: string;
   name: string;
-  date: Date;
+  start_date: Date;
+  end_date: Date;
   location: string;
   directions?: string;
   details?: string;
@@ -13,11 +14,12 @@ export interface EventModel extends Document {
 
 const eventSchema = new Schema<EventModel>({
   name: { type: String, required: true },
-  date: { type: Date, required: true },
+  start_date: { type: Date, required: true },
+  end_date: { type: Date, required: true },
   location: { type: String, required: true },
   directions: { type: String },
   details: { type: String },
-  date_added: {type: Date, default: Date.now()}
+  date_added: { type: Date, default: Date.now() },
 });
 
 export const Event = model<EventModel>('Event', eventSchema);
