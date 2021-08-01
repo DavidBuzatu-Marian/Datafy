@@ -103,7 +103,9 @@ router.put(
         return res.status(400).json('Error! Checks have failed');
       }
       const person = await updatePerson(req);
-
+      if (person == null) {
+        return res.status(400).json('Bad request');
+      }
       res.status(200).json(person);
     } catch (err) {
       handleErrors(res, err);

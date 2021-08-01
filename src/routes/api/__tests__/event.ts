@@ -230,6 +230,7 @@ describe('add event and update name and start_date', () => {
       responseAddEvent.body._id,
       fields
     );
+    expect(responseUpdateEvent.body).not.toBeNull();
     expect(responseUpdateEvent.statusCode).toEqual(200);
     checkUpdatedFields(responseUpdateEvent.body, fields);
   });
