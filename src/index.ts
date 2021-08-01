@@ -9,5 +9,5 @@ const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
   // tslint:disable-next-line:no-console
-  logger.info(`Server started on port:${port}`);
+  console.log(`Server started on port:${port}`);
 });
