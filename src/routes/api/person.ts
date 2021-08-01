@@ -29,9 +29,6 @@ router.get('/:id', async (req: Request, res: Response) => {
 router.get('/', async (req: Request, res: Response) => {
   try {
     const persons = await findPersons();
-    if (persons == null) {
-      return res.status(400).send('Bad Request');
-    }
     res.status(200).json(persons);
   } catch (err) {
     handleErrors(res, err);

@@ -233,7 +233,7 @@ describe('add person with today birthday and get it', () => {
       .get('/api/person/info/birthdays')
       .send({
         month: todayDate.getMonth() + 1,
-        dayOfMonth: todayDate.getDate(),
+        dayOfMonth: todayDate.getDate() + 1,
       });
     expect(responseBirthdays.statusCode).toEqual(200);
     expect(responseBirthdays.body.length).toEqual(1);
