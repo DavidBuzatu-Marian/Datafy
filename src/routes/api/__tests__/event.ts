@@ -340,6 +340,16 @@ describe('add event and update end_date with invalid value', () => {
   });
 });
 
+describe('get events added in the past hour', () => {
+  it('should get all events added in the tests', async () => {
+    const responseGetEventsPastHour = await request(app).get(
+      '/api/event/info/latest'
+    );
+    expect(responseGetEventsPastHour.statusCode).toEqual(200);
+    console.log(responseGetEventsPastHour);
+  });
+});
+
 const checkUpdatedFields = (event: EventModel, fields: {}) => {
   assert(event !== null);
   for (const [key, value] of Object.entries(fields)) {

@@ -7,6 +7,7 @@ import {
   findEvents,
   deleteEvent,
   updateEvent,
+  findEventsAddedInThePastHour,
 } from '../handlers/event';
 import { Request, Response } from 'express';
 import { check, body } from 'express-validator';
@@ -52,6 +53,17 @@ router.get('/', async (req: Request, res: Response) => {
     if (events == null) {
       return res.status(400).send('Bad Request');
     }
+    res.status(200).json(events);
+  } catch (err) {
+    handleErrors(res, err);
+  }
+});
+
+router.get('/info/latest', async (req: Request, res: Response) => {
+  try {
+    const oneHourEarlierDate = new Date();
+    oneHourEarlierDate.setHours(-1);
+    const events = await findEventsAddedInThePastHour(oneHourEarlierDate);
     res.status(200).json(events);
   } catch (err) {
     handleErrors(res, err);
