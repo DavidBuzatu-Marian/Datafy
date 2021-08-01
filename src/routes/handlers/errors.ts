@@ -4,7 +4,7 @@ import { validationResult } from 'express-validator';
 import { logger } from '../../logger/logger';
 
 export const handleErrors = (res: Response, err: NativeError) => {
-  logger.error(Date.now().toString() + '. Error: ' + err);
+  logger.error(new Date().toISOString() + '. Error: ' + err);
   res.status(500).json({ msg: `Server error` });
 };
 
