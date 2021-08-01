@@ -1,6 +1,6 @@
 import { Person, PersonModel } from '../../models/person';
 import { Request } from 'express';
-import { Model } from 'mongoose';
+import { Aggregate, Model } from 'mongoose';
 
 export const findPersonById = (id: any) => {
   return Person.findById(id);
@@ -30,4 +30,26 @@ export const createPerson = (req: Request<{}, {}, PersonModel>) => {
 
 export const savePerson = (person: PersonModel): Promise<PersonModel> => {
   return person.save();
+};
+
+export const findBirthdaysForDate = async (
+  month: number,
+  day: number
+): Promise<Aggregate<any[]>> => {
+  return Person.aggregate([
+    {
+      $redact: {
+        $cond: [
+          {
+            $and: [
+              { $eq: [{ $month: '$birthday' }, month] },
+              { $eq: [{ $dayOfMonth: '$birthday' }, day] },
+            ],
+          },
+          '$$KEEP',
+          '$$PRUNE',
+        ],
+      },
+    },
+  ]);
 };

@@ -7,9 +7,11 @@ import {
   findPersons,
   deletePerson,
   updatePerson,
+  findBirthdaysForDate,
 } from '../handlers/person';
 import { Request, Response } from 'express';
 import { body, check } from 'express-validator';
+import { time } from 'console';
 const router = express.Router();
 
 router.get('/:id', async (req: Request, res: Response) => {
@@ -27,10 +29,21 @@ router.get('/:id', async (req: Request, res: Response) => {
 router.get('/', async (req: Request, res: Response) => {
   try {
     const persons = await findPersons();
-    if (persons == null) {
-      return res.status(400).send('Bad Request');
-    }
     res.status(200).json(persons);
+  } catch (err) {
+    handleErrors(res, err);
+  }
+});
+
+router.get('/info/birthdays', async (req: Request, res: Response) => {
+  try {
+    const currentDate = new Date();
+    const month = req.body.month ? req.body.month : currentDate.getMonth() + 1;
+    const dayOfMonth = req.body.dayOfMonth
+      ? req.body.dayOfMonth
+      : currentDate.getDate();
+    const birthdays = await findBirthdaysForDate(month, dayOfMonth);
+    res.status(200).json(birthdays);
   } catch (err) {
     handleErrors(res, err);
   }
@@ -90,7 +103,9 @@ router.put(
         return res.status(400).json('Error! Checks have failed');
       }
       const person = await updatePerson(req);
-
+      if (person == null) {
+        return res.status(400).json('Bad request');
+      }
       res.status(200).json(person);
     } catch (err) {
       handleErrors(res, err);

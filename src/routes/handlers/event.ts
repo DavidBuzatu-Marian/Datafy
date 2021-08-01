@@ -1,6 +1,6 @@
 import { Event, EventModel } from '../../models/event';
 import { Request } from 'express';
-import { Model } from 'mongoose';
+import { Model, Query } from 'mongoose';
 
 export const createEvent = (req: Request<{}, {}, EventModel>) => {
   const { name, start_date, end_date, location, directions, details } =
@@ -37,4 +37,12 @@ export const updateEvent = async (req: Request): Promise<EventModel> => {
     { ...req.body },
     { new: true }
   );
+};
+
+export const findEventsAddedInThePastHour = async (
+  oneHourEarlierDate: Date
+): Promise<Query<EventModel[], EventModel, {}, EventModel>> => {
+  return Event.find({
+    date_added: { $gte: oneHourEarlierDate },
+  });
 };

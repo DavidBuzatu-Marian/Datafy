@@ -230,6 +230,7 @@ describe('add event and update name and start_date', () => {
       responseAddEvent.body._id,
       fields
     );
+    expect(responseUpdateEvent.body).not.toBeNull();
     expect(responseUpdateEvent.statusCode).toEqual(200);
     checkUpdatedFields(responseUpdateEvent.body, fields);
   });
@@ -336,6 +337,16 @@ describe('add event and update end_date with invalid value', () => {
       fields
     );
     expect(responseUpdateEvent.statusCode).toEqual(500);
+  });
+});
+
+describe('get events added in the past hour', () => {
+  it('should get all events added in the tests', async () => {
+    const responseGetEventsPastHour = await request(app).get(
+      '/api/event/info/latest'
+    );
+    expect(responseGetEventsPastHour.statusCode).toEqual(200);
+    console.log(responseGetEventsPastHour);
   });
 });
 
