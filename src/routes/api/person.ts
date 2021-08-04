@@ -11,7 +11,6 @@ import {
 } from '../handlers/person';
 import { Request, Response } from 'express';
 import { body, check } from 'express-validator';
-import { time } from 'console';
 const router = express.Router();
 
 router.get('/:id', async (req: Request, res: Response) => {
