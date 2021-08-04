@@ -346,7 +346,23 @@ describe('get events added in the past hour', () => {
       '/api/event/info/latest'
     );
     expect(responseGetEventsPastHour.statusCode).toEqual(200);
-    console.log(responseGetEventsPastHour);
+  });
+});
+
+describe('add event and update calendar_id', () => {
+  it('should add an event and update the calendar_id of it', async () => {
+    const responseAddEvent = await addEvent();
+    expect(responseAddEvent.statusCode).toEqual(200);
+    const fields = {
+      calendar_id: 'sp9ko8ema50ivhagjp7802o9vk',
+    };
+    const responseUpdateEvent = await updateEvent(
+      responseAddEvent.body._id,
+      fields
+    );
+    expect(responseUpdateEvent.statusCode).toEqual(200);
+    expect(responseUpdateEvent.body).not.toBeNull();
+    checkUpdatedFields(responseUpdateEvent.body, fields);
   });
 });
 

@@ -103,9 +103,9 @@ router.put(
       if (checkNotSucceeded(req)) {
         return res.status(400).json('Error! Checks have failed');
       }
-      const person = await updateEvent(req);
+      const event = await updateEvent(req);
 
-      res.status(200).json(person);
+      res.status(200).json(event);
     } catch (err) {
       handleErrors(res, err);
     }
