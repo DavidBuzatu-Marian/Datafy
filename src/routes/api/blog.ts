@@ -32,23 +32,23 @@ router.post(
       const blog: Blog = Object.assign(new Blog(), req.body);
       const blogTitleWithDash = blog.title.split(' ').join('-');
       // run script to fetch remote changes
-      if (shell.exec('git submodule update --remote --rebase').code !== 0) {
-        logger.error('Error! Git update for submodule failed!');
-        return res.status(500).json('Error! Something went wrong');
-      }
+      // if (shell.exec('git submodule update --remote --rebase').code !== 0) {
+      //   logger.error('Error! Git update for submodule failed!');
+      //   return res.status(500).json('Error! Something went wrong');
+      // }
       // cd into submodule
       shell.cd('Blogs');
       // change to branch of blog title
-      if (
-        shell.exec(`git show-ref -q --heads ${blogTitleWithDash}`).code !== 0
-      ) {
-        // create branch
-        shell.exec(`git checkout -b ${blogTitleWithDash}`);
-      } else {
-        // checkout to existing brach
-        shell.exec(`git checkout ${blogTitleWithDash}`);
-      }
-      // write to file
+      // if (
+      //   shell.exec(`git show-ref -q --heads ${blogTitleWithDash}`).code !== 0
+      // ) {
+      //   // create branch
+      //   shell.exec(`git checkout -b ${blogTitleWithDash}`);
+      // } else {
+      //   // checkout to existing brach
+      //   shell.exec(`git checkout ${blogTitleWithDash}`);
+      // }
+      // // write to file
       if (
         shell.exec(`echo "${blog.content}" > ${blogTitleWithDash}.md`).code !==
         0
@@ -58,17 +58,16 @@ router.post(
       }
       // replace \n
       if (
-        shell.exec(
-          `awk '{gsub(/\\\\n/,\"\\n\\n\")}1' ${blogTitleWithDash}.md > ${blogTitleWithDash}2.md`,
-          { shell: '/mingw64/bin:/usr/bin' }
-        ).code !== 0
+        shell.sed('-i', /\\n/g, '\n\n', `${blogTitleWithDash}.md`).code !== 0
       ) {
-        logger.error('Error! Awk failed!');
+        logger.error('Error! Sed failed!');
         return res.status(500).json('Error! Something went wrong');
       }
-      console.log(
-        `awk '{gsub(/\\\\n/,\"\\n\\n\")}1' ${blogTitleWithDash}.md > ${blogTitleWithDash}2.md`
-      );
+      // remove "
+      if (shell.sed('-i', /\"/g, '', `${blogTitleWithDash}.md`).code !== 0) {
+        logger.error('Error! Sed failed!');
+        return res.status(500).json('Error! Something went wrong');
+      }
       // add files and commit
       // if (shell.exec('git add .').code !== 0) {
       //   logger.error('Error! Git add for submodule failed!');
