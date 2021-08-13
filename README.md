@@ -5,7 +5,7 @@ A personal database of people and events. Get notified when birthdays are coming
 - [Structure](#structure)
     - [REST API](#rest-api)
     - [Notification Microservice](#notification-microservice)
-    - [Mongo Microservice](#mongo-microservice)
+    - [Calendar Microservice](#calendar-microservice)
 - [Tech Stack](#tech-stack)
     - [Languages](#languages)
     - [Database](#database)
