@@ -1,3 +1,4 @@
 [submodule "Blogs"]
 	path = Blogs
 	url = https://github.com/DavidBuzatu-Marian/Blogs
+	branch = main
