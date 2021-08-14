@@ -38,7 +38,7 @@ router.post(
       }
       const blog: Blog = Object.assign(new Blog(), req.body);
       const blogTitleWithDash = blog.title.split(' ').join('-');
-      // update local repo
+
       pullLatestChangesToBlog(res);
       updateAndRebaseBlogWithRemote(res);
       changeDirectory('Blogs');
@@ -49,7 +49,7 @@ router.post(
       gitCommitLatestChangesAndSwitchToMain(res, blogTitleWithDash);
       changeDirectory('..');
 
-      return res.status(200);
+      return res.status(200).json(`Blog: ${blog.title} saved successfully!`);
     } catch (err) {
       handleErrors(res, err);
     }

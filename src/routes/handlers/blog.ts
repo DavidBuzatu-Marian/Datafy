@@ -5,14 +5,14 @@ import { Response } from 'express';
 export const pullLatestChangesToBlog = (res: Response) => {
   if (shell.exec('git pull origin main').code !== 0) {
     logger.error('Error! Git update main failed!');
-    return res.status(500).json('Error! Something went wrong');
+    throw new Error('Something went wrong in blogs');
   }
 };
 
 export const updateAndRebaseBlogWithRemote = (res: Response) => {
   if (shell.exec('git submodule update --remote --rebase').code !== 0) {
     logger.error('Error! Git update for submodule failed!');
-    return res.status(500).json('Error! Something went wrong');
+    throw new Error('Something went wrong in blogs');
   }
 };
 
@@ -43,7 +43,7 @@ export const writeBlogToFile = (
 ) => {
   if (shell.exec(`echo "${content}" > ${fileName}.md`).code !== 0) {
     logger.error('Error! writing to file failed!');
-    return res.status(500).json('Error! Something went wrong');
+    throw new Error('Something went wrong in blogs');
   }
 };
 
@@ -55,7 +55,7 @@ export const replaceAll = (
 ) => {
   if (shell.sed('-i', regex, replacement, `${fileName}.md`).code !== 0) {
     logger.error('Error! Sed failed!');
-    return res.status(500).json('Error! Something went wrong');
+    throw new Error('Something went wrong in blogs');
   }
 };
 
@@ -66,19 +66,19 @@ export const gitCommitLatestChangesAndSwitchToMain = (
   // add files and commit
   if (shell.exec('git add .').code !== 0) {
     logger.error('Error! Git add for submodule failed!');
-    return res.status(500).json('Error! Something went wrong');
+    throw new Error('Something went wrong in blogs');
   }
   if (shell.exec(`git commit -m "Updated ${fileName}.md"`).code !== 0) {
     logger.error('Error! Git commit for submodule failed!');
-    return res.status(500).json('Error! Something went wrong');
+    throw new Error('Something went wrong in blogs');
   }
   if (shell.exec(`git push -u origin ${fileName}`).code !== 0) {
     logger.error('Error! Git update for submodule failed!');
-    return res.status(500).json('Error! Something went wrong');
+    throw new Error('Something went wrong in blogs');
   }
   if (shell.exec(`git checkout main`).code !== 0) {
     logger.error('Error! Git checkout to main failed!');
-    return res.status(500).json('Error! Something went wrong');
+    throw new Error('Something went wrong in blogs');
   }
 };
 
@@ -88,14 +88,14 @@ export const gitCommitLatestChangesOnMainProject = (
 ) => {
   if (shell.exec('git add .').code !== 0) {
     logger.error('Error! Git add for main failed!');
-    return res.status(500).json('Error! Something went wrong');
+    throw new Error('Something went wrong in blogs');
   }
   if (shell.exec(`git commit -m "Updated ${fileName}.md"`).code !== 0) {
     logger.error('Error! Git commit for main failed!');
-    return res.status(500).json('Error! Something went wrong');
+    throw new Error('Something went wrong in blogs');
   }
   if (shell.exec(`git push`).code !== 0) {
     logger.error('Error! Git update for main failed!');
-    return res.status(500).json('Error! Something went wrong');
+    throw new Error('Something went wrong in blogs');
   }
 };
