@@ -25,7 +25,7 @@ class Blog {
   }
 }
 
-router.post(
+router.put(
   '/save',
   [
     check('title', 'Title is mandatory').not().isEmpty(),
