@@ -31,6 +31,11 @@ router.post(
       }
       const blog: Blog = Object.assign(new Blog(), req.body);
       const blogTitleWithDash = blog.title.split(' ').join('-');
+      // update local repo
+      if (shell.exec('git pull origin main').code !== 0) {
+        logger.error('Error! Git update main submodule failed!');
+        return res.status(500).json('Error! Something went wrong');
+      }
       // run script to fetch remote changes
       if (shell.exec('git submodule update --remote --rebase').code !== 0) {
         logger.error('Error! Git update for submodule failed!');
@@ -69,40 +74,41 @@ router.post(
         return res.status(500).json('Error! Something went wrong');
       }
       // add files and commit
-      // if (shell.exec('git add .').code !== 0) {
-      //   logger.error('Error! Git add for submodule failed!');
-      //   return res.status(500).json('Error! Something went wrong');
-      // }
-      // if (
-      //   shell.exec(`git commit -m "Updated ${blogTitleWithDash}.md"`).code !== 0
-      // ) {
-      //   logger.error('Error! Git commit for submodule failed!');
-      //   return res.status(500).json('Error! Something went wrong');
-      // }
-      // if (shell.exec(`git push -u origin ${blogTitleWithDash}`).code !== 0) {
-      //   logger.error('Error! Git update for submodule failed!');
-      //   return res.status(500).json('Error! Something went wrong');
-      // }
-      // if (shell.exec(`git checkout main`).code !== 0) {
-      //   logger.error('Error! Git checkout to main failed!');
-      //   return res.status(500).json('Error! Something went wrong');
-      // }
-      // // update main
-      // shell.cd('..');
-      // if (shell.exec('git add .').code !== 0) {
-      //   logger.error('Error! Git add for main failed!');
-      //   return res.status(500).json('Error! Something went wrong');
-      // }
-      // if (
-      //   shell.exec(`git commit -m "Updated ${blogTitleWithDash}.md"`).code !== 0
-      // ) {
-      //   logger.error('Error! Git commit for main failed!');
-      //   return res.status(500).json('Error! Something went wrong');
-      // }
-      // if (shell.exec(`git push`).code !== 0) {
-      //   logger.error('Error! Git update for main failed!');
-      //   return res.status(500).json('Error! Something went wrong');
-      // }
+      if (shell.exec('git add .').code !== 0) {
+        logger.error('Error! Git add for submodule failed!');
+        return res.status(500).json('Error! Something went wrong');
+      }
+      if (
+        shell.exec(`git commit -m "Updated ${blogTitleWithDash}.md"`).code !== 0
+      ) {
+        logger.error('Error! Git commit for submodule failed!');
+        return res.status(500).json('Error! Something went wrong');
+      }
+      if (shell.exec(`git push -u origin ${blogTitleWithDash}`).code !== 0) {
+        logger.error('Error! Git update for submodule failed!');
+        return res.status(500).json('Error! Something went wrong');
+      }
+      if (shell.exec(`git checkout main`).code !== 0) {
+        logger.error('Error! Git checkout to main failed!');
+        return res.status(500).json('Error! Something went wrong');
+      }
+      // update main
+      shell.cd('..');
+      if (shell.exec('git add .').code !== 0) {
+        logger.error('Error! Git add for main failed!');
+        return res.status(500).json('Error! Something went wrong');
+      }
+      if (
+        shell.exec(`git commit -m "Updated ${blogTitleWithDash}.md"`).code !== 0
+      ) {
+        logger.error('Error! Git commit for main failed!');
+        return res.status(500).json('Error! Something went wrong');
+      }
+      if (shell.exec(`git push`).code !== 0) {
+        logger.error('Error! Git update for main failed!');
+        return res.status(500).json('Error! Something went wrong');
+      }
+      return res.status(200);
     } catch (err) {
       handleErrors(res, err);
     }
