@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { check } from 'express-validator';
 import {
   changeDirectory,
+  getBlogsFromMain,
   gitMergeBranchIntoMain,
   gitPushBranch,
   saveBlog,
@@ -14,11 +15,12 @@ const router = express.Router();
 export class Blog {
   title: string;
   content: string;
-  getTitle(): string {
-    return this.title;
-  }
-  getContent(): string {
-    return this.content;
+  url: string;
+
+  constructor(title?: string, content?: string, url?: string) {
+    this.title = title;
+    this.content = content;
+    this.url = url;
   }
 }
 
@@ -68,5 +70,14 @@ router.put(
     }
   }
 );
+
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    const blogs = await getBlogsFromMain();
+    res.status(200).json(blogs);
+  } catch (err) {
+    handleErrors(res, err);
+  }
+});
 
 module.exports = router;

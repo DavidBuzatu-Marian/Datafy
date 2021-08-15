@@ -2,6 +2,12 @@ import shell from 'shelljs';
 import { logger } from '../../logger/logger';
 import { Blog } from '../api/blog';
 import fs from 'fs';
+import axios, { AxiosResponse } from 'axios';
+
+interface RepositoryBlog {
+  name: string;
+  url: string;
+}
 
 export const saveBlog = (blog: Blog) => {
   pullLatestChanges('main');
@@ -97,4 +103,31 @@ export const gitPushBranch = (branchName: string) => {
   if (shell.exec(`git push -u origin ${branchName}`).code !== 0) {
     throw new Error(`Git push for ${branchName} failed!`);
   }
+};
+
+export const getBlogsFromMain = async () => {
+  const blogsFromGitHub = await getBlogsFromGitHub();
+  let requestsForBlog: Promise<AxiosResponse<any>>[] = [];
+  blogsFromGitHub.data.forEach((blog: RepositoryBlog) => {
+    requestsForBlog.push(axios.get(blog.url));
+  });
+  let blogsPromises: PromiseSettledResult<AxiosResponse<any>>[] =
+    await Promise.allSettled(requestsForBlog);
+  let blogs: Blog[] = [];
+  blogsPromises.map((blog) => {
+    if (blog.status === 'fulfilled' && blog.value.data.name !== 'README.md') {
+      blogs.push({
+        title: blog.value.data.name,
+        url: blog.value.data.url,
+        content: blog.value.data.content,
+      });
+    }
+  });
+  return blogs;
+};
+
+const getBlogsFromGitHub = async () => {
+  return await axios.get(
+    'https://api.github.com/repos/DavidBuzatu-Marian/Blogs/contents'
+  );
 };
