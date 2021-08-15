@@ -13,11 +13,11 @@ const router = express.Router();
 
 export class Blog {
   title: string;
-  content: String;
+  content: string;
   getTitle(): string {
     return this.title;
   }
-  getContent(): String {
+  getContent(): string {
     return this.content;
   }
 }

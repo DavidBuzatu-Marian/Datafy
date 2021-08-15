@@ -1,6 +1,7 @@
 import shell from 'shelljs';
 import { logger } from '../../logger/logger';
 import { Blog } from '../api/blog';
+import fs from 'fs';
 
 export const saveBlog = (blog: Blog) => {
   pullLatestChanges('main');
@@ -10,7 +11,6 @@ export const saveBlog = (blog: Blog) => {
   pullLatestChanges(blog.title);
   writeBlogToFile(blog.content, blog.title);
   replaceAll(/\\n/g, '\n\n', blog.title);
-  replaceAll(/\"/g, '', blog.title);
   gitCommitLatestChangesAndSwitchToMain(blog.title);
   changeDirectory('..');
 };
@@ -53,10 +53,8 @@ export const switchToBlogTitleBranch = (fileName: String) => {
   }
 };
 
-export const writeBlogToFile = (content: String, fileName: String) => {
-  if (shell.exec(`echo "${content}" > ${fileName}.md`).code !== 0) {
-    throw new Error('writing to file failed!');
-  }
+export const writeBlogToFile = (content: string, fileName: String) => {
+  fs.writeFileSync(`${fileName}.md`, content);
 };
 
 export const replaceAll = (
