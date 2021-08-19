@@ -5,6 +5,7 @@ services:
     container_name: datafy_backend
     restart: always
     build: .
+    image: davidbuzatumarian/datafy_ts_project
     environment:
       - PORT=5000
       - NODE_ENV=production
