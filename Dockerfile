@@ -4,6 +4,8 @@ FROM node:alpine as builder
 # Set workdir
 WORKDIR /usr/app/datafy
 
+ENV PORT 5000
+
 # Copy package.json
 COPY package.json .
 
@@ -11,28 +13,15 @@ COPY package.json .
 COPY tsconfig.json .
 
 # Install modules
-RUN npm install --legacy-peer-deps && npm install typescript -g && npm i @types/mongoose
+RUN npm install --legacy-peer-deps && npm install typescript -g
+
+RUN npm install pm2 -g
 
 COPY . .
 
 # Run build
 RUN npm run build
 
+EXPOSE 5000
 
-# Stage 2 - Remove TS dependencies
-FROM node:alpine as remover
-
-WORKDIR /usr/app/datafy
-
-COPY --from=builder /usr/app/package*.json ./
-COPY --from=builder /usr/app/dist ./
-
-RUN npm install --only=production
-
-
-# Stage 3 - Run project
-FROM gcr.io/distroless/nodejs:14
-WORKDIR /usr/app/datafy
-COPY --from=remover /usr/app/datafy ./
-USER 1000
-CMD ["index.js"]
+CMD [ "pm2-runtime", "./dist/index.js" ]

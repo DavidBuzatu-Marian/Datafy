@@ -3,3 +3,4 @@ coverage
 .vscode
 dist
 Dockerfile
+Datafy.pem
