@@ -2,20 +2,27 @@
 A personal database of people and events. Get notified when birthdays are coming up and get all your events synched with Google Calendar automatically.
 
 # Contents
+- [Datafy](#datafy)
+- [Contents](#contents)
 - [Structure](#structure)
-    - [REST API](#rest-api)
-    - [Notification Microservice](#notification-microservice)
-    - [Calendar Microservice](#calendar-microservice)
+  * [REST API](#rest-api)
+  * [Diagram](#diagram)
+  * [Endpoints](#endpoints)
+  * [Notification Microservice](#notification-microservice)
+  * [Calendar Microservice](#calendar-microservice)
 - [Tech Stack](#tech-stack)
-    - [Languages](#languages)
-    - [Database](#database)
-    - [Others](#others)
+  * [Languages](#languages)
+  * [Database](#database)
+  * [Others](#others)
 
 # Structure
 ## REST API
 The REST API is written in *TypeScript*. It was developed in a Test-Driven-Development manner to make sure endpoints are working accordingly and good practices are endorsed. The REST API is concerned only with adding/removing/updating/getting information about people and events from the **Mongo Database**, while also managing the [blogs](https://github.com/DavidBuzatu-Marian/Blogs) repository used in my [portfolio](https://github.com/DavidBuzatu-Marian/DavidBuzatu_Portfolio_V2) website.
 
-### Endpoints
+## Diagram
+<img src="https://i.ibb.co/pPL4QL1/Datafy-Diagram.jpg" alt="Datafy-Diagram" border="0" height="280">
+
+## Endpoints
 1. Person
 - CRUD operations
 - GET 'person/info/birthdays': Getting list of persons with current date birthday
