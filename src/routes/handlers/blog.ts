@@ -22,22 +22,29 @@ export const saveBlog = (blog: Blog) => {
 };
 
 export const gitMergeBranchIntoMain = (branchName: String) => {
-  if (
-    shell.exec(`git merge --strategy-option=theirs ${branchName}`).code !== 0
-  ) {
-    throw new Error('Git update main failed!');
+  const mergeCommandResult = shell.exec(
+    `git merge --strategy-option=theirs ${branchName}`
+  );
+  if (mergeCommandResult.code !== 0) {
+    throw new Error(`Git update main failed! Code: ${mergeCommandResult.code}`);
   }
 };
 
 export const pullLatestChanges = (branchName: string) => {
-  if (shell.exec(`git pull origin ${branchName}`).code !== 0) {
-    throw new Error('Git update main failed!');
+  const pullCommandResult = shell.exec(`git pull origin ${branchName}`);
+  if (pullCommandResult.code !== 0) {
+    throw new Error(`Git update main failed! Code: ${pullCommandResult.code}`);
   }
 };
 
 export const updateAndRebaseBlogWithRemote = () => {
-  if (shell.exec('git submodule update --remote --rebase').code !== 0) {
-    throw new Error('Git update for submodule failed!');
+  const updateCommandResult = shell.exec(
+    'git submodule update --remote --rebase'
+  );
+  if (updateCommandResult.code !== 0) {
+    throw new Error(
+      `Git update for submodule failed! Code: ${updateCommandResult.code}`
+    );
   }
 };
 
