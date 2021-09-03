@@ -7,6 +7,7 @@ A personal database of people, events and blogs. The REST API is used to:
 # Contents
 - [Datafy](#datafy)
 - [Contents](#contents)
+- [Getting Started](#getting-started)
 - [Structure](#structure)
   * [REST API](#rest-api)
   * [Diagram](#diagram)
