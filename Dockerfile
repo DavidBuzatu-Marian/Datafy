@@ -19,6 +19,8 @@ RUN npm install pm2 -g
 
 COPY . .
 
+RUN apk add --no-cache git
+
 # Run build
 RUN npm run build
 
