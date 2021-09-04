@@ -1,6 +1,8 @@
 # Node image
 FROM node:alpine as builder
 
+COPY .gitconfig ~/.gitconfig
+
 # Set workdir
 WORKDIR /usr/app/datafy
 
