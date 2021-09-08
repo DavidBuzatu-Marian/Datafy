@@ -69,4 +69,4 @@ The [Kotlin Android app](https://github.com/DavidBuzatu-Marian/Datafy-Kotlin-And
 * [Supertest](https://www.npmjs.com/package/supertest) + [Jest](https://jestjs.io) - Used to create and run TypeScript tests
 * [Beeep](https://github.com/gen2brain/beeep) - Used to sent Windows Notifications
 * [Google Calendar API](https://developers.google.com/calendar) - Used to update personal calendar events
-* [Shelljs](https://www.npmjs.com/package/shelljs - Used to execute shell commands for the blog creation and publication (e.g. it is used to call `awk` and `git` from the NodeJS REST API)
+* [Shelljs](https://www.npmjs.com/package/shelljs) - Used to execute shell commands for the blog creation and publication (e.g. it is used to call `awk` and `git` from the NodeJS REST API)
